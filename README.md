@@ -49,8 +49,24 @@ The APK is written to `app/build/outputs/apk/release/`. Needs JDK 17 and the And
 
 ## Signing
 
-Without setup, release APKs are signed with a debug key that CI caches between runs.
-To sign with your own key, add these repository secrets:
-`SIGNING_KEYSTORE_BASE64` (the keystore file, base64-encoded), `SIGNING_STORE_PASSWORD`,
-`SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD`.
-Switching keys means uninstalling the old app once before installing the new one.
+Add two repository secrets (Settings → Secrets and variables → Actions) and every build is signed
+with the same key, so updates install over the old app:
+
+- `SIGNING_KEYSTORE_BASE64`: the keystore file, base64-encoded
+- `SIGNING_PASSWORD`: the keystore password (the key uses the same one)
+
+The key alias defaults to `release`; set `SIGNING_KEY_ALIAS` if yours differs, or
+`SIGNING_KEY_PASSWORD` if the key has its own password.
+
+Make a key with:
+
+```
+keytool -genkeypair -keystore release.p12 -storetype PKCS12 -alias release \
+  -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=Dhivehi Subtitles"
+base64 -w0 release.p12   # paste the output into SIGNING_KEYSTORE_BASE64
+```
+
+Keep the keystore and password somewhere safe. Without them, future updates can't be signed
+with the same key and people would have to uninstall first.
+
+Without these secrets, builds fall back to a temporary debug key.
