@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/app_name_dv"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/tagline"
+            android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_continue"
+            style="@style/DS.HomeButton"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/accent"
+            android:textColor="#000000"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_open_video"
+            style="@style/DS.HomeButton"
+            android:text="@string/open_video" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_open_subs"
+            style="@style/DS.HomeButton"
+            android:text="@string/open_subs" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_new"
+            style="@style/DS.HomeButton"
+            android:text="@string/new_subtitles" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_open_url"
+            style="@style/DS.HomeButton.Outlined"
+            android:text="@string/open_url" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_converter"
+            style="@style/DS.HomeButton.Outlined"
+            android:text="@string/converter" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_settings"
+            style="@style/DS.HomeButton.Outlined"
+            android:text="@string/settings" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_help"
+            style="@style/DS.HomeButton.Outlined"
+            android:text="@string/help" />
+    </LinearLayout>
+</ScrollView>

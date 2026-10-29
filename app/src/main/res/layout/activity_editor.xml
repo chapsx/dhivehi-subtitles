@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/video_box"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="#000000">
+
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:show_buffering="when_playing"
+            app:show_subtitle_button="false" />
+
+        <TextView
+            android:id="@+id/placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/tap_to_open_video"
+            android:textColor="#CCFFFFFF" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/editor_panel"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add"
+                    style="@style/DS.ToolButton"
+                    android:text="@string/add" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_edit"
+                    style="@style/DS.ToolButton"
+                    android:text="@string/edit" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_set_start"
+                    style="@style/DS.ToolButton"
+                    android:text="@string/set_start" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_set_end"
+                    style="@style/DS.ToolButton"
+                    android:text="@string/set_end" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_prev"
+                    style="@style/DS.ToolButton"
+                    android:text="@string/prev" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_next"
+                    style="@style/DS.ToolButton"
+                    android:text="@string/next" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_sync_minus"
+                    style="@style/DS.ToolButton"
+                    android:text="@string/sync_minus" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_sync_plus"
+                    style="@style/DS.ToolButton"
+                    android:text="@string/sync_plus" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cue_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="80dp"
+            android:scrollbars="vertical" />
+    </LinearLayout>
+</LinearLayout>
