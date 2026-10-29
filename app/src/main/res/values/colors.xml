@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand">#00796B</color>
+    <color name="brand_dark">#004D40</color>
+    <color name="accent">#FFB300</color>
+    <color name="cue_selected">#3300796B</color>
+    <color name="cue_active">#22FFB300</color>
+    <color name="icon_bg">#00796B</color>
+</resources>

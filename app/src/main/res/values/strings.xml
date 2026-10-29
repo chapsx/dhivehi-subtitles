@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dhivehi Subtitles</string>
+    <string name="app_name_dv">ދިވެހި ސަބްޓައިޓަލް</string>
+    <string name="tagline">Watch, write and fix Dhivehi subtitles</string>
+    <string name="editor">Subtitle editor</string>
+    <string name="converter">Thaana converter</string>
+    <string name="settings">Settings</string>
+    <string name="help">How to use</string>
+
+    <string name="open_video">Open video</string>
+    <string name="open_url">Open video from link</string>
+    <string name="open_subs">Open subtitle file</string>
+    <string name="new_subtitles">New subtitles</string>
+    <string name="continue_project">Continue: %1$s</string>
+    <string name="continue_last">Continue last</string>
+    <string name="discard_draft_msg">Your last project has unsaved changes. Starting something new will replace it.</string>
+    <string name="start_new">Start new</string>
+    <string name="open">Open</string>
+    <string name="load">Load</string>
+
+    <string name="tap_to_open_video">Tap here to open a video\n(or just write subtitles without one)</string>
+    <string name="add">+ Add</string>
+    <string name="edit">Edit</string>
+    <string name="set_start">[ Start</string>
+    <string name="set_end">End ]</string>
+    <string name="sync_minus">Sync −</string>
+    <string name="sync_plus">Sync +</string>
+    <string name="prev">◀</string>
+    <string name="next">▶</string>
+
+    <string name="save">Save</string>
+    <string name="save_as">Save as SRT…</string>
+    <string name="export_vtt">Export WebVTT…</string>
+    <string name="share">Share</string>
+    <string name="undo">Undo</string>
+    <string name="shift_timings">Shift all timings</string>
+    <string name="find_replace">Find &amp; replace</string>
+    <string name="convert_ascii">Convert ASCII Thaana</string>
+    <string name="fix_overlaps">Fix overlaps &amp; empty lines</string>
+    <string name="delete">Delete</string>
+    <string name="insert_after">Insert line after</string>
+    <string name="split">Split in two</string>
+    <string name="merge_next">Merge with next</string>
+    <string name="play_from_here">Play from here</string>
+    <string name="new_line">New line</string>
+    <string name="edit_line">Edit line</string>
+    <string name="start_time">Start</string>
+    <string name="end_time">End</string>
+    <string name="now">Now</string>
+    <string name="subtitle_text">Subtitle text</string>
+    <string name="phonetic_keyboard">Thaana phonetic typing (a→ަ, h→ހ …)</string>
+    <string name="apply">Apply</string>
+    <string name="convert">Convert</string>
+    <string name="discard">Discard</string>
+    <string name="keep_draft">Keep draft</string>
+    <string name="replace_all">Replace all</string>
+    <string name="find_next">Find next</string>
+    <string name="find">Find</string>
+    <string name="replace_with">Replace with</string>
+    <string name="seconds_hint">Seconds, e.g. 1.5 or -2</string>
+    <string name="from_selected">Only from the selected line onward</string>
+    <string name="offset_note">Pre-filled with your current sync adjustment. Applying it makes it permanent.</string>
+    <string name="reverse_order">Reverse letter order (old files typed backwards)</string>
+    <string name="convert_note">Old Dhivehi subtitles were often made with ASCII Thaana fonts (like A_Faruma) and look like Latin letters on modern phones. This turns them into real Thaana. Lines that already have Thaana are left alone.</string>
+
+    <string name="no_subs_yet">No subtitles yet. Load a file or tap “+ Add”.</string>
+    <string name="no_subtitles_found">No subtitles found in that file</string>
+    <string name="loaded_n">Loaded %1$d lines</string>
+    <string name="no_thaana_found">No Thaana letters found. Is this ASCII-font Dhivehi?</string>
+    <string name="error_x">Error: %1$s</string>
+    <string name="cannot_play">Cannot play this video (%1$s)</string>
+    <string name="tap_subtitle_first">Tap a subtitle line first</string>
+    <string name="need_video">Open a video to use the current time</string>
+    <string name="end_after_start">End time must be after start time</string>
+    <string name="bad_time">Time format: 00:01:23,450 or seconds</string>
+    <string name="nothing_to_undo">Nothing to undo</string>
+    <string name="no_next">No next line</string>
+    <string name="deleted">Line deleted</string>
+    <string name="not_found">Not found</string>
+    <string name="replaced_n">Replaced %1$d times</string>
+    <string name="converted_n">Converted %1$d lines</string>
+    <string name="fixed_n">Fixed %1$d overlaps, removed %2$d empty lines</string>
+    <string name="saved_x">Saved %1$s</string>
+    <string name="save_copy">Can\'t write to the original file. Choose where to save.</string>
+    <string name="unsaved_title">Unsaved changes</string>
+    <string name="unsaved_msg">Save your subtitles before leaving?</string>
+    <string name="unsaved_lost">Unsaved changes will be lost.</string>
+    <string name="copied">Copied</string>
+
+    <string name="input_label">Latin / ASCII-font text, or type here</string>
+    <string name="output_label">Thaana result</string>
+    <string name="reverse_lines">Reverse lines</string>
+    <string name="copy">Copy</string>
+    <string name="clear">Clear</string>
+
+    <string name="subtitle_style">Subtitle style</string>
+    <string name="font_size">Text size</string>
+    <string name="text_color">Text colour</string>
+    <string name="bg_opacity">Background darkness</string>
+    <string name="bottom_margin">Distance from bottom</string>
+    <string name="outline">Text shadow</string>
+    <string name="bold">Bold</string>
+    <string name="font">Thaana font</string>
+    <string name="choose_font">Choose font file</string>
+    <string name="use_system_font">Use system font</string>
+    <string name="system_font">System font (Noto Sans Thaana)</string>
+    <string name="custom_font">Custom font</string>
+    <string name="font_set">Font set</string>
+    <string name="font_bad">That file is not a usable font</string>
+    <string name="editing">Editing</string>
+    <string name="default_duration">Default length of a new line</string>
+    <string name="autoscroll">Follow playback in the list</string>
+    <string name="write_bom">Save with UTF-8 BOM (best for TVs and Windows players)</string>
+    <string name="preview_text">ދިވެހި ސަބްޓައިޓަލް\nމަރުޙަބާ!</string>
+
+    <string name="help_text">OPEN\n• Open a video from your phone or a link, then load an .srt, .vtt, .ass or .ssa file. You can also write subtitles with no video.\n\nWATCH\n• Subtitles show on the video in Thaana. Turn the phone sideways (or tap the full-screen button) for full screen.\n• Out of sync? Use Sync − / Sync + (tap = 0.1 s, hold = 1 s). It is applied when you save.\n\nWRITE\n• + Add creates a line at the current video time.\n• Tap a line to jump to it. Hold a line for edit, split, merge, insert and delete.\n• [ Start and End ] set the selected line\'s times to the current video time — great for timing while you watch.\n• Thaana phonetic typing turns Latin keys into Thaana: h ހ, S ށ, n ނ, r ރ, b ބ, L ޅ, k ކ, w އ, v ވ, m މ, f ފ, d ދ, t ތ, l ލ, g ގ, N ޏ, s ސ, D ޑ, z ޒ, T ޓ, y ޔ, p ޕ, j ޖ, c ޗ; vowels a ަ, A ާ, i ި, I ީ, u ު, U ޫ, e ެ, E ޭ, o ޮ, O ޯ, q ް (sukun).\n\nFIX\n• Shift all timings, find &amp; replace, fix overlaps, undo.\n• Convert ASCII Thaana turns old A_Faruma-style text into real Thaana.\n\nSAVE\n• Save writes back to the file you opened (or asks where). Export WebVTT and Share are in the menu. Your work is also autosaved as a draft.</string>
+</resources>

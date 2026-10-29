@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_undo" android:icon="@drawable/ic_undo" android:title="@string/undo" app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_save" android:icon="@drawable/ic_save" android:title="@string/save" app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_open_video" android:title="@string/open_video" />
+    <item android:id="@+id/action_open_url" android:title="@string/open_url" />
+    <item android:id="@+id/action_open_subs" android:title="@string/open_subs" />
+    <item android:id="@+id/action_new" android:title="@string/new_subtitles" />
+    <item android:id="@+id/action_save_as" android:title="@string/save_as" />
+    <item android:id="@+id/action_export_vtt" android:title="@string/export_vtt" />
+    <item android:id="@+id/action_share" android:title="@string/share" />
+    <item android:id="@+id/action_shift" android:title="@string/shift_timings" />
+    <item android:id="@+id/action_find" android:title="@string/find_replace" />
+    <item android:id="@+id/action_convert" android:title="@string/convert_ascii" />
+    <item android:id="@+id/action_fix" android:title="@string/fix_overlaps" />
+    <item android:id="@+id/action_settings" android:title="@string/settings" />
+    <item android:id="@+id/action_help" android:title="@string/help" />
+</menu>
