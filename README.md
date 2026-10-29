@@ -37,6 +37,8 @@ GitHub Actions (`.github/workflows/build-apk.yml`) builds every push and publish
 
 **Thaana converter**: a notepad for phonetic typing and converting Latin/ASCII text.
 
+**Dark mode**: choose Follow system, Light or Dark in Settings.
+
 ## Build it yourself
 
 ```
