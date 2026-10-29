@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.util.TypedValue
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import java.io.File
 
 /** App settings and subtitle style. */
@@ -44,6 +45,13 @@ class Prefs(context: Context) {
         get() = sp.getInt("default_cue_ms", 2500)
         set(v) = sp.edit().putInt("default_cue_ms", v).apply()
 
+    /** Index into [THEME_MODES]: 0 follow system, 1 light, 2 dark. */
+    var theme: Int
+        get() = sp.getInt("theme", 0).coerceIn(0, THEME_MODES.size - 1)
+        set(v) = sp.edit().putInt("theme", v).apply()
+
+    fun applyTheme() = AppCompatDelegate.setDefaultNightMode(THEME_MODES[theme])
+
     val fontFile: File get() = File(app.filesDir, "custom_font.ttf")
 
     fun typeface(): Typeface {
@@ -67,5 +75,10 @@ class Prefs(context: Context) {
     companion object {
         val COLORS = intArrayOf(Color.WHITE, Color.YELLOW, Color.CYAN, Color.GREEN, 0xFFFFA726.toInt())
         val COLOR_NAMES = arrayOf("White", "Yellow", "Cyan", "Green", "Orange")
+        val THEME_MODES = intArrayOf(
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+            AppCompatDelegate.MODE_NIGHT_NO,
+            AppCompatDelegate.MODE_NIGHT_YES
+        )
     }
 }

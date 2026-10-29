@@ -48,6 +48,22 @@ class SettingsActivity : AppCompatActivity() {
             prefs.defaultCueMs = it * 100
         }
 
+        val themes = findViewById<Spinner>(R.id.spinner_theme)
+        themes.adapter = ArrayAdapter(
+            this, android.R.layout.simple_spinner_dropdown_item,
+            resources.getStringArray(R.array.theme_names)
+        )
+        themes.setSelection(prefs.theme)
+        themes.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p: android.widget.AdapterView<*>?, v: android.view.View?, pos: Int, id: Long) {
+                if (pos == prefs.theme) return
+                prefs.theme = pos
+                // Recreates open screens in the new theme.
+                prefs.applyTheme()
+            }
+            override fun onNothingSelected(p: android.widget.AdapterView<*>?) {}
+        }
+
         val colors = findViewById<Spinner>(R.id.spinner_color)
         colors.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, Prefs.COLOR_NAMES)
         colors.setSelection(Prefs.COLORS.indexOf(prefs.textColor).coerceAtLeast(0))

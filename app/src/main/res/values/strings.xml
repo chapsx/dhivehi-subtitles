@@ -94,6 +94,13 @@
     <string name="copy">Copy</string>
     <string name="clear">Clear</string>
 
+    <string name="appearance">Appearance</string>
+    <string name="theme">App theme</string>
+    <string-array name="theme_names">
+        <item>Follow system</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
     <string name="subtitle_style">Subtitle style</string>
     <string name="font_size">Text size</string>
     <string name="text_color">Text colour</string>
