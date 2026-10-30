@@ -49,6 +49,8 @@ done
 
 adb exec-out screencap -p > "$OUT/shot_final.png"
 adb logcat -d -v time > "$OUT/logcat_all.txt"
+grep "CAPTION_WORDS" "$OUT/logcat_all.txt" > "$OUT/caption_words.txt"
+cp speech_truth.txt "$OUT/" 2>/dev/null
 adb logcat -d -b crash > "$OUT/crash.txt"
 adb shell dumpsys meminfo "$PKG" > "$OUT/meminfo.txt" 2>&1
 adb shell ls -la "/sdcard/Movies/Dhivehi Subtitles/" > "$OUT/exported_files.txt" 2>&1

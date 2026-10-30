@@ -16,6 +16,10 @@ object AudioDecoder {
 
     const val TARGET_RATE = 16000
 
+    /** Where the first decoded sound sits on the video timeline, in microseconds (set by [decode]). */
+    @Volatile var lastAudioStartUs: Long = 0L
+        private set
+
     class NoAudioException : IOException("This video has no sound track.")
 
     fun decode(context: Context, uri: Uri, isCancelled: () -> Boolean, onProgress: (Float) -> Unit): FloatArray {
@@ -47,6 +51,8 @@ object AudioDecoder {
         val out = FloatList(if (durationUs > 0) (durationUs / 1_000_000L * TARGET_RATE + TARGET_RATE).toInt() else 1 shl 20)
 
         val info = MediaCodec.BufferInfo()
+        var formatSeen = false
+        var firstPtsUs = -1L
         var inputDone = false
         var outputDone = false
         try {
@@ -68,6 +74,7 @@ object AudioDecoder {
                 }
                 val outIdx = codec.dequeueOutputBuffer(info, 10_000)
                 if (outIdx == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                    formatSeen = true
                     val of = codec.outputFormat
                     channels = of.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
                     val rate = of.getInteger(MediaFormat.KEY_SAMPLE_RATE)
@@ -75,7 +82,20 @@ object AudioDecoder {
                     pcmFloat = of.containsKey(MediaFormat.KEY_PCM_ENCODING) &&
                         of.getInteger(MediaFormat.KEY_PCM_ENCODING) == AudioFormat.ENCODING_PCM_FLOAT
                 } else if (outIdx >= 0) {
+                    if (!formatSeen) {
+                        // Some phones never announce the format: read it from the first buffer instead.
+                        val of = codec.getOutputFormat(outIdx)
+                        if (of.containsKey(MediaFormat.KEY_CHANNEL_COUNT)) channels = of.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+                        if (of.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
+                            val rate = of.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                            if (rate != resampler.inRate) resampler = Resampler(rate, TARGET_RATE)
+                        }
+                        pcmFloat = of.containsKey(MediaFormat.KEY_PCM_ENCODING) &&
+                            of.getInteger(MediaFormat.KEY_PCM_ENCODING) == AudioFormat.ENCODING_PCM_FLOAT
+                        formatSeen = true
+                    }
                     val buf = codec.getOutputBuffer(outIdx)
+                    if (buf != null && info.size > 0 && firstPtsUs < 0) firstPtsUs = info.presentationTimeUs
                     if (buf != null && info.size > 0) {
                         buf.position(info.offset)
                         buf.limit(info.offset + info.size)
@@ -109,6 +129,7 @@ object AudioDecoder {
             codec.release()
             extractor.release()
         }
+        lastAudioStartUs = firstPtsUs.coerceAtLeast(0L)
         resampler.flush(out)
         normalise(out)
         return out.toArray()

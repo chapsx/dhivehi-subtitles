@@ -261,9 +261,27 @@ class EditorActivity : AppCompatActivity() {
                         runOnUiThread { setBusy(getString(R.string.reading_audio), (p * 10).toInt()) }
                     }
                     Transcriber.ensureLoaded(applicationContext) { s -> runOnUiThread { setBusy(s, 10) } }
-                    runOnUiThread { setBusy(getString(R.string.listening, 0), 12) }
-                    Transcriber.transcribe(audio) { pct ->
-                        runOnUiThread { setBusy(getString(R.string.listening, pct), 12 + pct * 88 / 100) }
+                    // Short clips report progress only at the end, so show elapsed time meanwhile.
+                    var lastPct = 0
+                    val started = System.currentTimeMillis()
+                    val ticker = launch(Dispatchers.Main) {
+                        while (isActive) {
+                            if (lastPct == 0) {
+                                val sec = (System.currentTimeMillis() - started) / 1000
+                                setBusy(getString(R.string.listening_elapsed, sec), 12)
+                            }
+                            delay(1000)
+                        }
+                    }
+                    try {
+                        Transcriber.transcribe(audio, AudioDecoder.lastAudioStartUs / 1000L) { pct ->
+                            if (pct > 0) {
+                                lastPct = pct
+                                runOnUiThread { setBusy(getString(R.string.listening, pct), 12 + pct * 88 / 100) }
+                            }
+                        }
+                    } finally {
+                        ticker.cancel()
                     }
                 }
                 hideBusy()

@@ -24,7 +24,7 @@ class Project(val videoUri: Uri) {
 
     companion object {
         private fun fileFor(context: Context, uri: Uri): File {
-            val dir = File(context.filesDir, "projects").apply { mkdirs() }
+            val dir = File(context.filesDir, "projects2").apply { mkdirs() } // v2: precise timings
             val hash = MessageDigest.getInstance("SHA-1").digest(uri.toString().toByteArray())
                 .joinToString("") { "%02x".format(it) }
             return File(dir, "$hash.json")

@@ -42,6 +42,10 @@ JNIEXPORT jlong JNICALL FN(initContext)(JNIEnv *env, jobject thiz, jstring model
     const char *path = (*env)->GetStringUTFChars(env, modelPath, NULL);
     struct whisper_context_params cparams = whisper_context_default_params();
     cparams.use_gpu = false;
+    cparams.flash_attn = false;
+    // Precise word timing: align each token to the audio with the model's alignment heads (DTW).
+    cparams.dtw_token_timestamps = true;
+    cparams.dtw_aheads_preset = WHISPER_AHEADS_SMALL;
     struct whisper_context *ctx = whisper_init_from_file_with_params(path, cparams);
     (*env)->ReleaseStringUTFChars(env, modelPath, path);
     if (ctx == NULL) LOGI("Failed to load model");
@@ -141,13 +145,13 @@ JNIEXPORT jbyteArray JNICALL FN(tokenBytes)(JNIEnv *env, jobject thiz, jlong ptr
     return arr;
 }
 
-// Token start/end in centiseconds, and probability (x1000).
+// Token start/end in centiseconds, probability (x1000), and DTW-aligned time in centiseconds (-1 if none).
 JNIEXPORT jlongArray JNICALL FN(tokenTiming)(JNIEnv *env, jobject thiz, jlong ptr, jint seg, jint tok) {
     (void) thiz;
     whisper_token_data d = whisper_full_get_token_data((struct whisper_context *) (intptr_t) ptr, seg, tok);
-    jlong vals[3] = {(jlong) d.t0, (jlong) d.t1, (jlong) (d.p * 1000.0f)};
-    jlongArray arr = (*env)->NewLongArray(env, 3);
-    (*env)->SetLongArrayRegion(env, arr, 0, 3, vals);
+    jlong vals[4] = {(jlong) d.t0, (jlong) d.t1, (jlong) (d.p * 1000.0f), (jlong) d.t_dtw};
+    jlongArray arr = (*env)->NewLongArray(env, 4);
+    (*env)->SetLongArrayRegion(env, arr, 0, 4, vals);
     return arr;
 }
 

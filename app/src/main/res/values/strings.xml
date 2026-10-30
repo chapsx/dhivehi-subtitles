@@ -21,6 +21,7 @@
 
     <string name="reading_audio">Reading the audio…</string>
     <string name="listening">Listening to the Dhivehi speech… %1$d%%</string>
+    <string name="listening_elapsed">Listening to the Dhivehi speech… %1$d s</string>
     <string name="exporting">Creating your TikTok video… %1$d%%</string>
     <string name="saving">Saving to your gallery…</string>
     <string name="busy_hint">Keep the app open. Longer videos take longer.</string>
