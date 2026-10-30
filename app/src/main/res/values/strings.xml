@@ -94,4 +94,7 @@
     <string name="share">Share…</string>
     <string name="open">Watch</string>
     <string name="close">Back to editing</string>
+    <string name="crash_title">The app closed unexpectedly</string>
+    <string name="crash_message">Sorry about that. Please take a screenshot of this message and send it to whoever helps you with the app.</string>
+    <string name="crash_copy">Copy details</string>
 </resources>

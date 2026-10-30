@@ -36,7 +36,10 @@ class MainActivity : AppCompatActivity() {
         val warning = findViewById<TextView>(R.id.modelWarning)
         warning.visibility = if (Transcriber.isModelBundled(this)) View.GONE else View.VISIBLE
 
-        if (savedInstanceState == null) handleShareIntent(intent)
+        if (savedInstanceState == null) {
+            CrashReporter.showIfAny(this)
+            handleShareIntent(intent)
+        }
     }
 
     override fun onNewIntent(intent: Intent) {

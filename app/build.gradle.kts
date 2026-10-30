@@ -16,6 +16,8 @@ android {
 
         ndk {
             abiFilters += listOf("arm64-v8a")
+            // Emulator tests on GitHub also build for x86_64 (-PwithX86=true).
+            if (project.hasProperty("withX86")) abiFilters += listOf("x86_64")
         }
         externalNativeBuild {
             cmake {
@@ -50,6 +52,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        buildConfig = true
     }
     kotlinOptions {
         jvmTarget = "17"
