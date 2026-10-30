@@ -55,30 +55,58 @@ class SpeechAligner(samples: FloatArray) {
     private fun frameOf(ms: Long) = (ms / FRAME_MS).toInt()
     private fun isSpeech(f: Int) = f in speech.indices && speech[f]
 
+    /** Voice regions as [startFrame, endFrame) pairs. */
+    private val regions: List<IntArray> by lazy {
+        val out = ArrayList<IntArray>()
+        var i = 0
+        while (i < speech.size) {
+            if (speech[i]) {
+                var j = i
+                while (j < speech.size && speech[j]) j++
+                out.add(intArrayOf(i, j))
+                i = j
+            } else i++
+        }
+        out
+    }
+
+    private fun regionAt(f: Int): IntArray? = regions.firstOrNull { f >= it[0] && f < it[1] }
+
     fun refine(words: List<Word>) {
-        if (speech.isEmpty() || speech.none { it }) return
+        if (regions.isEmpty()) return
+
+        // 1) A word never stays on screen through a pause: end it when the voice stops.
+        for (w in words) {
+            val s = frameOf(w.startMs + 100)
+            val e = frameOf(w.endMs)
+            for (k in 0 until regions.size - 1) {
+                val gapStart = regions[k][1]
+                val gapEnd = regions[k + 1][0]
+                if (gapEnd - gapStart >= MIN_PAUSE_FRAMES && gapStart > s && gapStart < e) {
+                    w.endMs = gapStart.toLong() * FRAME_MS + TAIL_MS
+                    break
+                }
+            }
+        }
+
+        // 2) Starts follow the voice.
         for (idx in words.indices) {
             val w = words[idx]
             val prevEnd = if (idx > 0) words[idx - 1].endMs else 0L
             val nextStart = if (idx + 1 < words.size) words[idx + 1].startMs else Long.MAX_VALUE
-            var s = frameOf(w.startMs)
-
-            if (!isSpeech(s)) {
-                // Starts in silence: move forward to where the voice begins (up to 400 ms).
-                val limit = min(frameOf(min(w.endMs, nextStart)), s + 40)
-                var f = s
-                while (f < limit && !isSpeech(f)) f++
-                if (f < limit) s = f
-            } else {
-                // Starts mid-sound: if the voice began just before (≤ 200 ms) and the previous word was
-                // already over, start with the voice so the caption is never late.
-                var f = s
-                while (f > 0 && isSpeech(f - 1) && s - f < 20) f--
-                if (!isSpeech(f - 1) && f.toLong() * FRAME_MS >= prevEnd) s = f
+            val s = frameOf(w.startMs)
+            var region = regionAt(s)
+            if (region == null) {
+                // Starts in silence: the voice should begin shortly after (up to 400 ms).
+                region = regions.firstOrNull { it[0] > s && it[0] - s <= 40 && it[0].toLong() * FRAME_MS < nextStart }
+                if (region != null) w.startMs = region[0].toLong() * FRAME_MS
+            } else if (region[0].toLong() * FRAME_MS >= prevEnd) {
+                // First word heard after a pause: start exactly when the voice comes back.
+                w.startMs = region[0].toLong() * FRAME_MS
             }
-            w.startMs = max(prevEnd, s.toLong() * FRAME_MS - LEAD_MS).coerceAtLeast(0L)
+            w.startMs = max(w.startMs, prevEnd).coerceAtLeast(0L)
 
-            // Ends in silence: pull the end back to just after the voice stops.
+            // Ends in silence: pull back to just after the voice stops.
             val e = frameOf(w.endMs)
             if (!isSpeech(e - 1)) {
                 var f = e - 1
@@ -88,9 +116,13 @@ class SpeechAligner(samples: FloatArray) {
             }
             if (w.endMs < w.startMs + 120) w.endMs = w.startMs + 120
         }
-        // Keep order and no overlaps after adjustments.
         for (k in 1 until words.size) {
             if (words[k].startMs < words[k - 1].endMs) words[k - 1].endMs = max(words[k - 1].startMs + 60, words[k].startMs)
+        }
+        // Show every word slightly before its sound: viewers read a moment ahead, so this feels in sync.
+        for (w in words) {
+            w.startMs = (w.startMs - LEAD_MS).coerceAtLeast(0L)
+            w.endMs = (w.endMs - LEAD_MS).coerceAtLeast(w.startMs + 120)
         }
     }
 
@@ -98,7 +130,8 @@ class SpeechAligner(samples: FloatArray) {
         private const val HOP = 160          // 10 ms at 16 kHz
         private const val WIN = 320          // 20 ms window
         private const val FRAME_MS = 10L
-        private const val LEAD_MS = 40L      // show a word a hair before its sound
+        private const val LEAD_MS = 100L     // show a word slightly before its sound (feels in sync)
+        private const val MIN_PAUSE_FRAMES = 50 // 500 ms of silence counts as a pause
         private const val TAIL_MS = 150L     // keep it a moment after the voice stops
     }
 }
