@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity() {
 
     /** Lets people share a video from the Gallery straight into this app. */
     private fun handleShareIntent(intent: Intent?) {
+        if (intent?.action == Intent.ACTION_VIEW) {
+            intent.data?.let { openEditor(it) }
+            return
+        }
         if (intent?.action != Intent.ACTION_SEND) return
         val uri: Uri? = if (Build.VERSION.SDK_INT >= 33) {
             intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)

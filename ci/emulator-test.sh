@@ -7,19 +7,19 @@ OUT="test-out/api${API}"
 mkdir -p "$OUT"
 adb install -r app.apk > "$OUT/install.txt" 2>&1 || { cat "$OUT/install.txt"; exit 0; }
 
-# Start once so the app's own folder exists, then copy the test video into it.
-adb shell am start -W -n "$PKG/$MAIN"
+# Put the test video in the phone's Movies folder and let the media library find it.
+adb push test.mp4 /sdcard/Movies/dsubs_test.mp4
+adb shell content call --uri content://media/ --method scan_volume --arg external_primary > /dev/null 2>&1
 sleep 5
-adb shell mkdir -p "/sdcard/Android/data/$PKG/files"
-adb push test.mp4 "/sdcard/Android/data/$PKG/files/test.mp4"
-adb shell ls -la "/sdcard/Android/data/$PKG/files/" > "$OUT/files.txt" 2>&1
-adb shell am force-stop "$PKG"
+ID=$(adb shell content query --uri content://media/external/video/media --projection _id:_display_name \
+     | tr -d '\r' | grep dsubs_test | sed -n 's/.*_id=\([0-9]*\).*/\1/p' | head -1)
+echo "media id: $ID" > "$OUT/files.txt"
+URI="content://media/external/video/media/$ID"
 adb logcat -c
 
-# Same path as sharing a video into the app from the Gallery.
-adb shell am start -W -a android.intent.action.SEND -t video/mp4 \
-  --eu android.intent.extra.STREAM "file:///sdcard/Android/data/$PKG/files/test.mp4" \
-  -n "$PKG/$MAIN" > "$OUT/start.txt" 2>&1
+# Same as "Open with Dhivehi Auto Subtitles" from the Gallery: the app gets temporary read access.
+adb shell am start -W -a android.intent.action.VIEW -t video/mp4 -d "$URI" \
+  --grant-read-uri-permission -n "$PKG/$MAIN" > "$OUT/start.txt" 2>&1
 
 exported=0
 for i in $(seq 1 28); do
