@@ -1,72 +1,53 @@
-# Dhivehi Subtitles — ދިވެހި ސަބްޓައިޓަލް
+# Dhivehi Auto Subtitles — Android app
 
-An Android app to watch videos with Dhivehi (Thaana) subtitles, and to write, time and fix them on your phone.
+Automatic Dhivehi (Thaana) captions for videos of people speaking Dhivehi, styled for TikTok and exported as a ready-to-post 1080×1920 video. Speech recognition runs **entirely on the phone** — no internet, no accounts, no per-minute fees.
 
-## Download
+![Caption styles](docs/caption-styles-preview.png)
 
-Get the latest APK from **[Releases](https://github.com/chapsx/dhivehi-subtitles/releases/latest)** (file `DhivehiSubtitles.apk`).
-Open it on your phone and allow "install unknown apps" when asked. Needs Android 7.0 or newer.
+## What the app does
 
-GitHub Actions (`.github/workflows/build-apk.yml`) builds every push and publishes a new release.
+1. **Pick a video** (or share one into the app from your Gallery).
+2. **Listens and writes Thaana captions** on the phone, with a timestamp for every word.
+3. **Editor**: 9:16 preview with live captions; each caption line can be retyped, nudged ±0.1 s, set to the current video position, split, joined, added or deleted. A **Sync** slider shifts every caption earlier/later at once.
+4. **Style**: four presets (Pop, Clean, Box, Neon), text size, position, words per caption (1–6), boldness, word-by-word highlight, pop-in animation, fill/fit framing, and **import your own Thaana font** (.ttf/.otf, e.g. Faseyha or Waheed).
+5. **Export for TikTok**: 1080×1920, H.264 ~10 Mbps, AAC audio, MP4. HDR phone videos are converted to standard colour so captions look right. Saved to *Movies › Dhivehi Subtitles*, with one-tap **Post to TikTok** and **Share**.
 
-## Features
+Your edits are saved automatically, so closing the app never loses work.
 
-**Watch**
-- Plays videos and audio from your phone, or a video link (MP4, MKV, WebM, HLS…)
-- Shows Thaana subtitles right-to-left on the video, with your choice of size, colour, shadow, background and position
-- Use any Thaana font (.ttf/.otf) such as Faruma, or the phone's built-in Noto Sans Thaana
-- Full screen in landscape
-- Sync − / Sync + to fix out-of-sync subtitles (tap for 0.1 s, hold for 1 s)
+---
 
-**Open**
-- SRT, WebVTT, ASS/SSA
-- Detects UTF-8, UTF-16 and older encodings
-- Converts old ASCII-font Dhivehi (A_Faruma-style text that shows as Latin letters) to real Thaana, including files typed backwards
+## Install
 
-**Write and edit**
-- Add a line at the current video time; set start and end while watching
-- Thaana phonetic typing on any keyboard (h→ހ, a→ަ, q→ް …)
-- Edit, split, merge, insert, delete, undo
-- Shift all timings, find & replace, fix overlaps and empty lines
-- Line length and reading speed shown while typing
+Open **[Releases](https://github.com/chapsx/dhivehi-subtitles/releases)** on your phone, find the newest **Dhivehi Auto Subtitles** release (tag `auto-subs-…`), tap **DhivehiAutoSubtitles.apk**, open it and allow "install unknown apps".
 
-**Save**
-- Save back to the original file, save as SRT, export WebVTT, share
-- UTF-8 with BOM option for TVs and Windows players
-- Autosaved draft, so your work survives closing the app
+The app is built automatically by `.github/workflows/auto-subtitles-apk.yml` on every push to the `claude/auto-subtitles` branch. Its app ID (`mv.dhivehi.autosubs`) differs from the subtitle editor on `main`, so both can be installed together.
 
-**Thaana converter**: a notepad for phonetic typing and converting Latin/ASCII text.
+**Requirements:** Android 10 or newer, 64-bit phone, about 500 MB free space.
 
-**Dark mode**: choose Follow system, Light or Dark in Settings.
+---
 
-## Build it yourself
+## Honest notes on accuracy and speed
 
-```
-./gradlew assembleRelease
-```
+- **Accuracy.** Dhivehi is a low-resource language. The app uses an openly available Whisper model fine-tuned on Mozilla Common Voice Dhivehi recordings (`sanchit-gandhi/whisper-small-dv`). It gets most words right on clear speech, but expect to correct some words and *fili* (vowel marks) — that is why the editor exists. Noisy backgrounds, music, fast speech and slang reduce accuracy.
+- **Timing.** Word timings come from the model and are usually close. Use the **Sync** slider for an overall shift and the per-line menu for fine fixes.
+- **Speed.** Recognition runs on the phone's processor. On a recent mid-range or flagship phone expect very roughly 1–3 minutes of processing per minute of video; older phones are slower. Exporting is usually faster than real time.
 
-The APK is written to `app/build/outputs/apk/release/`. Needs JDK 17 and the Android SDK (platform 34).
+### Trying a different / better model
+If you find a better Dhivehi Whisper model on Hugging Face (base or small size work best on phones), go to **Actions → Build Android APK → Run workflow**, paste the model name (for example `your-name/whisper-small-dv`) and run it. `q8_0` compression is slightly more accurate than the default `q5_1` but makes the app bigger.
 
-## Signing
+---
 
-Add two repository secrets (Settings → Secrets and variables → Actions) and every build is signed
-with the same key, so updates install over the old app:
+## For developers
 
-- `SIGNING_KEYSTORE_BASE64`: the keystore file, base64-encoded
-- `SIGNING_PASSWORD`: the keystore password (the key uses the same one)
+- Kotlin, Android Views + Material 3, minSdk 29, targetSdk 35, arm64-v8a.
+- `app/src/main/cpp` — JNI bridge to [whisper.cpp](https://github.com/ggml-org/whisper.cpp) v1.7.4 (cloned into `third_party/` by the workflow). Token-level timestamps; UTF-8 bytes are joined per word in Kotlin because one Thaana letter can span two tokens. A fp16-optimised library is loaded on phones that support it.
+- The fine-tuned model uses Whisper's Sinhala language slot (`si`), as in the Hugging Face audio course.
+- `captions/CaptionRenderer.kt` — one renderer for both preview and export (Android's text engine shapes Thaana correctly). Export uses Media3 Transformer with a `BitmapOverlay`.
+- Local build: clone whisper.cpp v1.7.4 into `third_party/whisper.cpp`, place a ggml model at `app/src/main/assets/models/ggml-dhivehi.bin`, then `./gradlew :app:assembleRelease` with Android SDK 35 and NDK installed.
+- `app/dhivehi-subtitles.jks` is a signing key so updates install over the old version. Replace it with your own before publishing to Google Play.
 
-The key alias defaults to `release`; set `SIGNING_KEY_ALIAS` if yours differs, or
-`SIGNING_KEY_PASSWORD` if the key has its own password.
-
-Make a key with:
-
-```
-keytool -genkeypair -keystore release.p12 -storetype PKCS12 -alias release \
-  -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=Dhivehi Subtitles"
-base64 -w0 release.p12   # paste the output into SIGNING_KEYSTORE_BASE64
-```
-
-Keep the keystore and password somewhere safe. Without them, future updates can't be signed
-with the same key and people would have to uninstall first.
-
-Without these secrets, builds fall back to a temporary debug key.
+## Third-party components
+- whisper.cpp / ggml — MIT License
+- Noto Sans Thaana — SIL Open Font License 1.1 (`app/src/main/assets/fonts/NotoSansThaana-OFL.txt`)
+- Dhivehi Whisper model — see its Hugging Face model card for its licence
+- AndroidX Media3, Material Components — Apache License 2.0

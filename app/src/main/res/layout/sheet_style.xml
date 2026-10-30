@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="22dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="28dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/style_title"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/presetGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/presetPop"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/preset_pop" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/presetClean"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/preset_clean" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/presetBox"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/preset_box" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/presetNeon"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/preset_neon" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            style="@style/SheetLabel"
+            android:text="@string/text_size" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/sizeSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="0.05"
+            android:valueTo="0.14"
+            app:labelBehavior="gone" />
+
+        <TextView
+            style="@style/SheetLabel"
+            android:text="@string/position" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/positionSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="0.15"
+            android:valueTo="0.85"
+            app:labelBehavior="gone" />
+
+        <TextView
+            style="@style/SheetLabel"
+            android:text="@string/words_per_caption" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/wordsSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="1"
+            android:valueFrom="1"
+            android:valueTo="6"
+            app:labelBehavior="floating" />
+
+        <TextView
+            style="@style/SheetLabel"
+            android:text="@string/font_weight" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/weightSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="100"
+            android:valueFrom="400"
+            android:valueTo="900"
+            app:labelBehavior="gone" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/highlightSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/highlight_word"
+            android:textColor="@color/text" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/popSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pop_animation"
+            android:textColor="@color/text" />
+
+        <TextView
+            style="@style/SheetLabel"
+            android:text="@string/framing" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/framingGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/framingFill"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/framing_fill" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/framingFit"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/framing_fit" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            style="@style/SheetLabel"
+            android:text="@string/font" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/fontName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/accent"
+                android:textSize="15sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fontBuiltin"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/font_use_builtin" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fontImport"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/font_import" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

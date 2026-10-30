@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="brand">#00796B</color>
-    <color name="brand_dark">#004D40</color>
-    <color name="accent">#FFB300</color>
-    <color name="cue_selected">#3300796B</color>
-    <color name="cue_active">#22FFB300</color>
-    <color name="icon_bg">#00796B</color>
+    <color name="bg">#0E0F13</color>
+    <color name="surface">#181A20</color>
+    <color name="surface_high">#22252D</color>
+    <color name="card_stroke">#2C3038</color>
+    <color name="text">#F4F5F7</color>
+    <color name="text_dim">#9AA0AB</color>
+    <color name="accent">#FFD60A</color>
+    <color name="on_accent">#14120A</color>
+    <color name="teal">#3EE6A8</color>
+    <color name="scrim">#E60E0F13</color>
+    <color name="ic_launcher_background">#0E0F13</color>
 </resources>

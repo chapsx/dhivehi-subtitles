@@ -1,112 +1,314 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <FrameLayout
-        android:id="@+id/video_box"
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:background="#000000">
-
-        <androidx.media3.ui.PlayerView
-            android:id="@+id/player_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:show_buffering="when_playing"
-            app:show_subtitle_button="false" />
-
-        <TextView
-            android:id="@+id/placeholder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="@string/tap_to_open_video"
-            android:textColor="#CCFFFFFF" />
-    </FrameLayout>
+    android:background="@color/bg">
 
     <LinearLayout
-        android:id="@+id/editor_panel"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <HorizontalScrollView
+        <!-- Top bar -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:layoutDirection="ltr"
+            android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingEnd="8dp">
 
-            <LinearLayout
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_back"
+                app:tint="@color/text" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/edit_subtitles"
+                android:textColor="@color/text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/redoButton"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp">
+                android:text="@string/redo" />
+        </LinearLayout>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_add"
-                    style="@style/DS.ToolButton"
-                    android:text="@string/add" />
+        <!-- 9:16 preview -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.25"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_edit"
-                    style="@style/DS.ToolButton"
-                    android:text="@string/edit" />
+            <mv.dhivehi.subtitles.ui.PortraitFrameLayout
+                android:id="@+id/previewFrame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_preview"
+                android:clipToOutline="true"
+                android:foreground="?attr/selectableItemBackground">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_set_start"
-                    style="@style/DS.ToolButton"
-                    android:text="@string/set_start" />
+                <androidx.media3.ui.PlayerView
+                    android:id="@+id/playerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:resize_mode="zoom"
+                    app:shutter_background_color="#000000"
+                    app:surface_type="texture_view"
+                    app:use_controller="false" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_set_end"
-                    style="@style/DS.ToolButton"
-                    android:text="@string/set_end" />
+                <mv.dhivehi.subtitles.ui.CaptionOverlayView
+                    android:id="@+id/captionOverlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_prev"
-                    style="@style/DS.ToolButton"
-                    android:text="@string/prev" />
+                <ImageView
+                    android:id="@+id/playIcon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:alpha="0.85"
+                    android:background="@drawable/bg_circle"
+                    android:contentDescription="@null"
+                    android:padding="14dp"
+                    android:src="@drawable/ic_play"
+                    app:tint="@color/text" />
+            </mv.dhivehi.subtitles.ui.PortraitFrameLayout>
+        </FrameLayout>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_next"
-                    style="@style/DS.ToolButton"
-                    android:text="@string/next" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_sync_minus"
-                    style="@style/DS.ToolButton"
-                    android:text="@string/sync_minus" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_sync_plus"
-                    style="@style/DS.ToolButton"
-                    android:text="@string/sync_plus" />
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <TextView
-            android:id="@+id/status"
+        <!-- Controls -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="middle"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
+            android:gravity="center_vertical"
+            android:layoutDirection="ltr"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="12dp">
+
+            <ImageButton
+                android:id="@+id/playButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Play"
+                android:src="@drawable/ic_play"
+                app:tint="@color/text" />
+
+            <TextView
+                android:id="@+id/timeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFeatureSettings="tnum"
+                android:text="0:00.0 / 0:00.0"
+                android:textColor="@color/text_dim"
+                android:textSize="13sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/syncButton"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/sync"
+                app:icon="@drawable/ic_sync" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/styleButton"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/style"
+                app:icon="@drawable/ic_style" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:paddingBottom="4dp"
-            android:singleLine="true"
-            android:textAppearance="?attr/textAppearanceLabelMedium" />
+            android:text="@string/tap_to_edit"
+            android:textColor="@color/text_dim"
+            android:textSize="12sp" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/cue_list"
+            android:id="@+id/captionList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:clipToPadding="false"
-            android:paddingBottom="80dp"
-            android:scrollbars="vertical" />
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/exportButton"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            android:text="@string/export"
+            android:textSize="17sp"
+            app:cornerRadius="16dp"
+            app:icon="@drawable/ic_export"
+            app:iconGravity="textStart" />
     </LinearLayout>
-</LinearLayout>
+
+    <!-- Working… -->
+    <LinearLayout
+        android:id="@+id/busyPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/scrim"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/thaana"
+            android:text="@string/app_name_dv"
+            android:textColor="@color/accent"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/busyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:textColor="@color/text"
+            android:textSize="17sp" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/busyProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:max="100"
+            app:indicatorColor="@color/accent"
+            app:trackColor="@color/surface_high"
+            app:trackCornerRadius="4dp"
+            app:trackThickness="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/busy_hint"
+            android:textColor="@color/text_dim"
+            android:textSize="13sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/busyCancel"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/cancel" />
+    </LinearLayout>
+
+    <!-- Done -->
+    <LinearLayout
+        android:id="@+id/donePanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/scrim"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="28dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_check" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/done_title"
+            android:textColor="@color/text"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/done_message"
+            android:textColor="@color/text_dim"
+            android:textSize="14sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/doneTikTok"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginTop="28dp"
+            android:text="@string/post_tiktok"
+            android:textSize="17sp"
+            app:cornerRadius="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/doneShare"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="@string/share" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/doneOpen"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="@string/open" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/doneClose"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/close" />
+    </LinearLayout>
+</FrameLayout>

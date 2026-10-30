@@ -1,0 +1,111 @@
+# Builds "Dhivehi Auto Subtitles" (automatic word-timed Thaana captions, on-device speech recognition).
+# The APK appears under Releases with a tag starting "auto-subs-".
+name: Build Auto Subtitles APK
+
+on:
+  push:
+    branches: ["claude/auto-subtitles"]
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Dhivehi Whisper model on Hugging Face"
+        default: "sanchit-gandhi/whisper-small-dv"
+        required: true
+      quant:
+        description: "q5_1 (smaller, faster) or q8_0 (bigger, slightly more accurate)"
+        default: "q5_1"
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  WHISPER_TAG: v1.7.4
+  MODEL_ID: ${{ github.event.inputs.model || 'sanchit-gandhi/whisper-small-dv' }}
+  QUANT: ${{ github.event.inputs.quant || 'q5_1' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Get whisper.cpp (speech recognition engine)
+        run: git clone --depth 1 --branch "$WHISPER_TAG" https://github.com/ggml-org/whisper.cpp third_party/whisper.cpp
+
+      # Fail fast on code errors before the slow model step.
+      - name: Compile check
+        run: ./gradlew --no-daemon :app:compileReleaseKotlin
+
+      - name: Reuse the speech model from a previous build
+        id: model-cache
+        uses: actions/cache@v4
+        with:
+          path: app/src/main/assets/models/ggml-dhivehi.bin
+          key: model-${{ env.MODEL_ID }}-${{ env.QUANT }}-${{ env.WHISPER_TAG }}-v1
+
+      - uses: actions/setup-python@v5
+        if: steps.model-cache.outputs.cache-hit != 'true'
+        with:
+          python-version: "3.11"
+
+      - name: Download and convert the Dhivehi speech model
+        if: steps.model-cache.outputs.cache-hit != 'true'
+        run: |
+          set -e
+          pip install --quiet torch --index-url https://download.pytorch.org/whl/cpu
+          pip install --quiet "transformers==4.44.2" "huggingface_hub>=0.24" numpy safetensors
+          python - <<'PY'
+          import os, shutil
+          from huggingface_hub import snapshot_download
+          model = os.environ["MODEL_ID"]
+          snapshot_download(model, local_dir="hf-model",
+                            allow_patterns=["*.json", "*.bin", "*.safetensors", "*.txt"],
+                            ignore_patterns=["*/*", "training_args.bin", "optimizer*", "scheduler*", "rng_state*"])
+          need = ["vocab.json", "added_tokens.json"]
+          missing = [f for f in need if not os.path.exists(os.path.join("hf-model", f))]
+          if missing:
+              print("Copying tokenizer files from openai/whisper-small:", missing)
+              snapshot_download("openai/whisper-small", local_dir="hf-base", allow_patterns=need)
+              for f in missing:
+                  shutil.copy(os.path.join("hf-base", f), os.path.join("hf-model", f))
+          print(sorted(os.listdir("hf-model")))
+          PY
+          git clone --depth 1 https://github.com/openai/whisper openai-whisper
+          mkdir -p model-out app/src/main/assets/models
+          python third_party/whisper.cpp/models/convert-h5-to-ggml.py hf-model openai-whisper model-out
+          cmake -S third_party/whisper.cpp -B wbuild -DCMAKE_BUILD_TYPE=Release -DWHISPER_BUILD_TESTS=OFF
+          cmake --build wbuild -j 4 --target quantize
+          ./wbuild/bin/quantize model-out/ggml-model.bin app/src/main/assets/models/ggml-dhivehi.bin "$QUANT"
+          ls -lh app/src/main/assets/models
+
+      - name: Build the APK
+        run: ./gradlew --no-daemon --stacktrace :app:assembleRelease
+
+      - name: Name the APK
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk DhivehiAutoSubtitles.apk
+          ls -lh DhivehiAutoSubtitles.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DhivehiAutoSubtitles-apk
+          path: DhivehiAutoSubtitles.apk
+
+      - name: Publish as a GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "auto-subs-${GITHUB_RUN_NUMBER}" DhivehiAutoSubtitles.apk \
+            --target "${GITHUB_SHA}" \
+            --title "Dhivehi Auto Subtitles ${GITHUB_RUN_NUMBER}" \
+            --notes "Automatic Dhivehi subtitles app. Download DhivehiAutoSubtitles.apk below on your phone and open it to install. Speech model: ${MODEL_ID} (${QUANT})." \
+            --latest=false

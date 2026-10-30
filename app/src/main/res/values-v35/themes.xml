@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Keep the classic layout (no drawing behind the status / navigation bars) on Android 15+. -->
+    <style name="Theme.DhivehiSubs" parent="Theme.DhivehiSubs.Base">
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
+</resources>
