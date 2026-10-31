@@ -43,7 +43,10 @@ jobs:
 
       # Fail fast on code errors before the slow model step.
       - name: Compile check
-        run: ./gradlew --no-daemon :app:compileReleaseKotlin
+        shell: bash
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon :app:compileReleaseKotlin 2>&1 | tee compile.log
 
       - name: Reuse the speech model from a previous build
         id: model-cache
@@ -88,7 +91,10 @@ jobs:
           ls -lh app/src/main/assets/models
 
       - name: Build the APK
-        run: ./gradlew --no-daemon --stacktrace :app:assembleRelease
+        shell: bash
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon --stacktrace :app:assembleRelease 2>&1 | tee build.log
 
       - name: Name the APK
         run: |
@@ -109,3 +115,14 @@ jobs:
             --title "Dhivehi Auto Subtitles ${GITHUB_RUN_NUMBER}" \
             --notes "Automatic Dhivehi subtitles app. Download DhivehiAutoSubtitles.apk below on your phone and open it to install. Speech model: ${MODEL_ID} (${QUANT})." \
             --latest=false
+
+      - name: Save the error log to a branch
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p logout
+          for f in compile.log build.log; do [ -f "$f" ] && grep -E "^e: |error:|What went wrong|FAILED|^w: .*error" -A3 "$f" > "logout/errors-$f" ; [ -f "$f" ] && tail -200 "$f" > "logout/tail-$f"; done
+          cd logout && git init -q && git config user.name github-actions && git config user.email github-actions@users.noreply.github.com
+          git checkout -q -b log && git add -A && git commit -q -m "build log ${GITHUB_RUN_NUMBER}"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" log:claude/build-log
