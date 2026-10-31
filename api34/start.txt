@@ -1,0 +1,7 @@
+Starting: Intent { act=android.intent.action.VIEW dat=content://media/... typ=video/mp4 flg=0x1 cmp=mv.dhivehi.autosubs/mv.dhivehi.subtitles.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: mv.dhivehi.autosubs/mv.dhivehi.subtitles.EditorActivity
+TotalTime: 1298
+WaitTime: 1311
+Complete
