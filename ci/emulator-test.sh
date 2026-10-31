@@ -59,7 +59,7 @@ tap_id() {
 }
 tap_id doneClose; sleep 2
 tap_id styleButton && sleep 3 && adb exec-out screencap -p > "$OUT/style_panel.png"
-adb shell input swipe 540 1700 540 600 400; sleep 2
+tap_id fontGallery >/dev/null 2>&1; sleep 2
 adb exec-out screencap -p > "$OUT/style_panel_fonts.png"
 adb logcat -d -v time > "$OUT/logcat_all.txt"
 grep "CAPTION_WORDS" "$OUT/logcat_all.txt" > "$OUT/caption_words.txt"
