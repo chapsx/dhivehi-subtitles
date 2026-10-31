@@ -91,8 +91,13 @@ object Transcriber {
                 }
                 onProgress(((i + 1) * 100 / chunks.size).coerceIn(1, 100))
             }
+            // Words at the very end of a piece can come out stacked or out of order: keep them in order.
             for (k in 1 until words.size) {
-                if (words[k].startMs < words[k - 1].endMs) words[k - 1].endMs = max(words[k - 1].startMs + 60, words[k].startMs)
+                if (words[k].startMs < words[k - 1].startMs + 40) words[k].startMs = words[k - 1].startMs + 40
+                if (words[k].endMs < words[k].startMs + 120) words[k].endMs = words[k].startMs + 120
+            }
+            for (k in 1 until words.size) {
+                if (words[k].startMs < words[k - 1].endMs) words[k - 1].endMs = max(words[k - 1].startMs + 40, words[k].startMs)
             }
             // Show each word a moment before its sound (measured best: 60 ms).
             val shift = audioStartMs.coerceIn(0L, 2000L) - LEAD_MS
