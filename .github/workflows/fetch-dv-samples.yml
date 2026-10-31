@@ -1,0 +1,31 @@
+name: Fetch Dhivehi test speech
+on:
+  push:
+    branches: ["claude/dv-samples-job"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          pip install --quiet torch==2.5.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install --quiet "transformers==4.44.2" "huggingface_hub>=0.24" soundfile numpy
+      - name: Download speech and compute word timings
+        run: python ci/fetch_dv_samples.py out
+      - name: Save to a branch
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p out && cd out
+          git init -q && git config user.name github-actions && git config user.email github-actions@users.noreply.github.com
+          git checkout -q -b data && git add -A && git commit -q -m "Dhivehi test speech with word timings" || true
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data:claude/dv-samples
