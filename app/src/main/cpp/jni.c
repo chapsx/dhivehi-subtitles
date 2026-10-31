@@ -92,6 +92,8 @@ JNIEXPORT jint JNICALL FN(transcribe)(JNIEnv *env, jobject thiz, jlong ptr, jflo
     p.token_timestamps = true;    // needed for word-by-word sync
     p.max_len = 0;
     p.suppress_blank = true;
+    // The Dhivehi model sometimes invents English words: never let it write Latin letters.
+    p.suppress_regex = "[A-Za-z]";
     p.greedy.best_of = 2;
     p.progress_callback = progress_cb;
     p.progress_callback_user_data = &pd;

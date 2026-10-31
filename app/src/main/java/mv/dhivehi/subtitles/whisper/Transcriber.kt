@@ -128,7 +128,9 @@ object Transcriber {
             var cur: Builder? = null
             fun flush() {
                 val b = cur ?: return
-                val text = String(b.bytes.toByteArray(), Charsets.UTF_8).trim()
+                // Safety net: drop any Latin letters or broken characters that slip through.
+                val text = String(b.bytes.toByteArray(), Charsets.UTF_8)
+                    .replace(Regex("[A-Za-z\\uFFFD]"), "").trim()
                 if (text.isNotEmpty() && text.any { it.isLetterOrDigit() }) {
                     val st = b.startCs.coerceIn(segT0, max(segT0, segT1))
                     val en = b.endCs.coerceIn(st, max(segT1, st))
