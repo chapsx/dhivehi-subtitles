@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.Color
 
 data class CaptionStyle(
-    /** null = built-in Noto Sans Thaana; otherwise a path to an imported .ttf/.otf font. */
+    /** One of [BuiltInFonts]; used when no font has been imported. */
+    var fontId: String = BuiltInFonts.DEFAULT_ID,
+    /** Path to an imported .ttf/.otf font; when set it is used instead of [fontId]. */
     var fontPath: String? = null,
     var fontWeight: Int = 800,
     /** Text size as a fraction of the video width. 0.095 = about 103px on a 1080px TikTok video. */
@@ -49,6 +51,7 @@ data class CaptionStyle(
 
     fun save(context: Context) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().apply {
+            putString("fontId", fontId)
             putString("fontPath", fontPath)
             putInt("fontWeight", fontWeight)
             putFloat("size", sizeFraction)
@@ -75,6 +78,7 @@ data class CaptionStyle(
             val d = CaptionStyle()
             if (!p.contains("size")) return d
             return CaptionStyle(
+                fontId = p.getString("fontId", null) ?: d.fontId,
                 fontPath = p.getString("fontPath", null),
                 fontWeight = p.getInt("fontWeight", d.fontWeight),
                 sizeFraction = p.getFloat("size", d.sizeFraction),

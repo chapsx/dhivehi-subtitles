@@ -83,6 +83,9 @@
     <string name="framing_fit">Show whole video</string>
     <string name="font">Font</string>
     <string name="font_builtin">Noto Sans Thaana</string>
+    <string name="font_imported">Your font: %1$s</string>
+    <string name="font_credit">Fonts by Thaana Type (thaana.com), free under the SIL Open Font License.</string>
+    <string name="font_sample">ދިވެހި</string>
     <string name="font_use_builtin">Built-in</string>
     <string name="font_import">Import font…</string>
     <string name="font_added">Font added</string>

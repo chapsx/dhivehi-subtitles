@@ -29,16 +29,21 @@ class CaptionRenderer(private val context: Context) {
 
     @Synchronized
     fun typeface(style: CaptionStyle): Typeface {
-        val key = "${style.fontPath}|${style.fontWeight}"
+        val key = "${style.fontPath}|${style.fontId}|${style.fontWeight}"
         if (key == cachedKey) return cachedTypeface
         val tf: Typeface? = try {
             val path = style.fontPath
-            if (path == null) {
-                Typeface.Builder(context.assets, BUILT_IN_FONT)
-                    .setFontVariationSettings("'wght' ${style.fontWeight}")
-                    .build()
-            } else {
+            if (path != null) {
                 Typeface.createFromFile(path)
+            } else {
+                val f = BuiltInFonts.byId(style.fontId)
+                if (f.variable) {
+                    Typeface.Builder(context.assets, f.asset)
+                        .setFontVariationSettings("'wght' ${style.fontWeight}")
+                        .build()
+                } else {
+                    Typeface.createFromAsset(context.assets, f.asset)
+                }
             }
         } catch (e: Exception) {
             null
@@ -47,6 +52,17 @@ class CaptionRenderer(private val context: Context) {
         cachedKey = key
         return cachedTypeface
     }
+
+    /** Typeface of a built-in font, for showing previews in the font picker. */
+    fun previewTypeface(font: BuiltInFonts.Font): Typeface = try {
+        if (font.variable) Typeface.Builder(context.assets, font.asset).setFontVariationSettings("'wght' 800").build()
+        else Typeface.createFromAsset(context.assets, font.asset)
+    } catch (e: Exception) {
+        Typeface.DEFAULT_BOLD
+    }
+
+    private fun sizeScale(style: CaptionStyle): Float =
+        if (style.fontPath != null) 1f else BuiltInFonts.byId(style.fontId).scale
 
     private fun layoutOf(text: CharSequence, paint: TextPaint, width: Int): StaticLayout =
         StaticLayout.Builder.obtain(text, 0, text.length, paint, width)
@@ -75,7 +91,7 @@ class CaptionRenderer(private val context: Context) {
         val plain = sb.toString()
         val maxW = (width * 0.76f).toInt() // stays clear of TikTok's side buttons
         val tf = typeface(style)
-        var textSize = style.sizeFraction * width
+        var textSize = style.sizeFraction * width * sizeScale(style)
 
         fun configure(size: Float) {
             fillPaint.typeface = tf

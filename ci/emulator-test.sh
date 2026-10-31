@@ -48,6 +48,19 @@ for i in $(seq 1 28); do
 done
 
 adb exec-out screencap -p > "$OUT/shot_final.png"
+
+# Open the Style panel and capture the font picker.
+tap_id() {
+  adb shell uiautomator dump /sdcard/ui.xml > /dev/null 2>&1
+  b=$(adb shell cat /sdcard/ui.xml | grep -o "resource-id=\"$PKG:id/$1\"[^>]*bounds=\"\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]\"" | grep -o '\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]' | head -1)
+  [ -z "$b" ] && return 1
+  nums=($(echo "$b" | grep -o '[0-9]*'))
+  adb shell input tap $(( (nums[0]+nums[2])/2 )) $(( (nums[1]+nums[3])/2 ))
+}
+tap_id doneClose; sleep 2
+tap_id styleButton && sleep 3 && adb exec-out screencap -p > "$OUT/style_panel.png"
+adb shell input swipe 540 1700 540 600 400; sleep 2
+adb exec-out screencap -p > "$OUT/style_panel_fonts.png"
 adb logcat -d -v time > "$OUT/logcat_all.txt"
 grep "CAPTION_WORDS" "$OUT/logcat_all.txt" > "$OUT/caption_words.txt"
 cp speech_truth.txt "$OUT/" 2>/dev/null

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
@@ -26,6 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
@@ -39,6 +41,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mv.dhivehi.subtitles.audio.AudioDecoder
+import mv.dhivehi.subtitles.captions.BuiltInFonts
 import mv.dhivehi.subtitles.captions.Caption
 import mv.dhivehi.subtitles.captions.CaptionBuilder
 import mv.dhivehi.subtitles.captions.CaptionRenderer
@@ -121,7 +124,7 @@ class EditorActivity : AppCompatActivity() {
         overlay.style = style
 
         adapter = CaptionAdapter(
-            renderer.typeface(CaptionStyle()),
+            renderer.typeface(CaptionStyle(fontId = "noto")),
             onTextEdited = { pos, text -> onTextEdited(pos, text) },
             onSeek = { pos -> seekToCaption(pos) },
             onMenu = { pos, anchor -> showCaptionMenu(pos, anchor) },
@@ -494,17 +497,59 @@ class EditorActivity : AppCompatActivity() {
         val pop = view.findViewById<MaterialSwitch>(R.id.popSwitch)
         val framing = view.findViewById<MaterialButtonToggleGroup>(R.id.framingGroup)
         val fontName = view.findViewById<TextView>(R.id.fontName)
+        val gallery = view.findViewById<LinearLayout>(R.id.fontGallery)
+        val galleryCards = ArrayList<Pair<String, MaterialCardView>>()
+        val dp = resources.displayMetrics.density
+        for (f in BuiltInFonts.ALL) {
+            val card = MaterialCardView(this).apply {
+                layoutParams = LinearLayout.LayoutParams((104 * dp).toInt(), (84 * dp).toInt()).apply { marginEnd = (8 * dp).toInt() }
+                radius = 14 * dp
+                cardElevation = 0f
+                setCardBackgroundColor(getColor(R.color.surface_high))
+                isClickable = true
+                isFocusable = true
+            }
+            val box = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = android.view.Gravity.CENTER
+                setPadding((6 * dp).toInt(), (6 * dp).toInt(), (6 * dp).toInt(), (6 * dp).toInt())
+            }
+            box.addView(TextView(this).apply {
+                text = getString(R.string.font_sample)
+                typeface = renderer.previewTypeface(f)
+                textSize = minOf(24f * f.scale, 34f)
+                setTextColor(getColor(R.color.text))
+                gravity = android.view.Gravity.CENTER
+                maxLines = 1
+            })
+            box.addView(TextView(this).apply {
+                text = f.name
+                textSize = 11f
+                setTextColor(getColor(R.color.text_dim))
+                gravity = android.view.Gravity.CENTER
+                maxLines = 1
+            })
+            card.addView(box)
+            card.setOnClickListener {
+                style.fontId = f.id
+                style.fontPath = null
+                refreshFontCards(galleryCards, fontName, weight)
+                style.save(this)
+                overlay.invalidate()
+            }
+            gallery.addView(card)
+            galleryCards.add(f.id to card)
+        }
 
         fun refreshControls() {
             size.value = style.sizeFraction.coerceIn(size.valueFrom, size.valueTo)
             position.value = style.positionFraction.coerceIn(position.valueFrom, position.valueTo)
             words.value = style.wordsPerCaption.toFloat().coerceIn(words.valueFrom, words.valueTo)
             weight.value = (style.fontWeight / 100 * 100).toFloat().coerceIn(weight.valueFrom, weight.valueTo)
-            weight.isEnabled = style.fontPath == null
+            refreshFontCards(galleryCards, fontName, weight)
             highlight.isChecked = style.highlightWords
             pop.isChecked = style.popAnimation
             framing.check(if (style.fillFrame) R.id.framingFill else R.id.framingFit)
-            fontName.text = style.fontPath?.let { File(it).nameWithoutExtension } ?: getString(R.string.font_builtin)
         }
 
         fun changed() {
@@ -548,10 +593,6 @@ class EditorActivity : AppCompatActivity() {
                 changed()
             }
         }
-        view.findViewById<View>(R.id.fontBuiltin).setOnClickListener {
-            style.fontPath = null
-            refreshControls(); changed()
-        }
         view.findViewById<View>(R.id.fontImport).setOnClickListener {
             dialog.dismiss()
             importFont.launch(arrayOf("font/ttf", "font/otf", "font/*", "application/x-font-ttf", "application/octet-stream", "*/*"))
@@ -562,6 +603,18 @@ class EditorActivity : AppCompatActivity() {
         dialog.behavior.skipCollapsed = true
         dialog.window?.setDimAmount(0.15f)
         dialog.show()
+    }
+
+    private fun refreshFontCards(cards: List<Pair<String, MaterialCardView>>, label: TextView, weight: Slider) {
+        val dp = resources.displayMetrics.density
+        for ((id, card) in cards) {
+            val on = style.fontPath == null && style.fontId == id
+            card.strokeWidth = if (on) (2 * dp).toInt() else 0
+            card.strokeColor = getColor(R.color.accent)
+        }
+        val path = style.fontPath
+        label.text = if (path != null) getString(R.string.font_imported, File(path).nameWithoutExtension) else getString(R.string.font_credit)
+        weight.isEnabled = path == null && BuiltInFonts.byId(style.fontId).variable
     }
 
     private fun importFontFrom(uri: Uri) {
