@@ -1,0 +1,30 @@
+> Task :app:compileReleaseKotlin FAILED
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:44:38 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:503:19 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:503:32 Method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+--
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:541:30 Argument type mismatch: actual type is 'kotlin.Pair<A, B>', but 'kotlin.Pair<kotlin.String, com.google.android.material.card.MaterialCardView>' was expected.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:541:35 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:617:44 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/BuiltInFonts.kt:34:1 Syntax error: Unclosed comment.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:39:25 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:57:31 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:58:18 Unresolved reference 'variable'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:58:66 Unresolved reference 'asset'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:59:60 Unresolved reference 'asset'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:65:45 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionStyle.kt:8:26 Unresolved reference 'BuiltInFonts'.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_2-1793412270260.json
+
+[Incubating] Problems report is available at: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/build/reports/problems/problems-report.html
+--
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+--
+BUILD FAILED in 1m 10s
+15 actionable tasks: 15 executed

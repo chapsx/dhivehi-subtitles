@@ -1,0 +1,76 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :app
+Checking the license for package NDK (Side by side) 27.0.12077973 in /usr/local/lib/android/sdk/licenses
+License for package NDK (Side by side) 27.0.12077973 accepted.
+Preparing "Install NDK (Side by side) 27.0.12077973 v.27.0.12077973".
+"Install NDK (Side by side) 27.0.12077973 v.27.0.12077973" ready.
+Installing NDK (Side by side) 27.0.12077973 in /usr/local/lib/android/sdk/ndk/27.0.12077973
+"Install NDK (Side by side) 27.0.12077973 v.27.0.12077973" complete.
+"Install NDK (Side by side) 27.0.12077973 v.27.0.12077973" finished.
+
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig
+> Task :app:generateReleaseResValues
+> Task :app:checkReleaseAarMetadata
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:mergeReleaseResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :app:processReleaseResources
+
+> Task :app:compileReleaseKotlin FAILED
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:44:38 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:503:19 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:503:32 Method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:541:30 Argument type mismatch: actual type is 'kotlin.Pair<A, B>', but 'kotlin.Pair<kotlin.String, com.google.android.material.card.MaterialCardView>' was expected.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:541:35 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/EditorActivity.kt:617:44 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/BuiltInFonts.kt:34:1 Syntax error: Unclosed comment.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:39:25 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:57:31 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:58:18 Unresolved reference 'variable'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:58:66 Unresolved reference 'asset'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:59:60 Unresolved reference 'asset'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionRenderer.kt:65:45 Unresolved reference 'BuiltInFonts'.
+e: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/app/src/main/java/mv/dhivehi/subtitles/captions/CaptionStyle.kt:8:26 Unresolved reference 'BuiltInFonts'.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_2-1793412270260.json
+
+[Incubating] Problems report is available at: file:///home/runner/work/dhivehi-subtitles/dhivehi-subtitles/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 10s
+15 actionable tasks: 15 executed
