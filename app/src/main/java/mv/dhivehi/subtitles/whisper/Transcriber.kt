@@ -69,18 +69,43 @@ object Transcriber {
         synchronized(lock) {
             val c = ctx
             check(c != 0L) { "Model not loaded" }
-            val r = WhisperLib.transcribe(c, samples, threadCount(), LANGUAGE, ProgressListener { onProgress(it.coerceIn(0, 100)) })
-            if (r == -2) throw InterruptedException()
-            if (r != 0) throw IOException("Speech recognition failed (code $r).")
-            val audioMs = samples.size * 1000L / 16000L
-            val words = cleanUp(collectWords(c), audioMs)
-            SpeechAligner(samples).refine(words)
-            if (audioStartMs in 1..2000) words.forEach { it.startMs += audioStartMs; it.endMs += audioStartMs }
-            Log.i(TAG, "CAPTION_WORDS " + words.joinToString(" | ") { "${it.startMs}-${it.endMs}" })
+            val chunks = SpeechAligner(samples).chunks()
+            val words = ArrayList<Word>()
+            val threads = threadCount()
+            chunks.forEachIndexed { i, ch ->
+                val from = ch.startFrame * SpeechAligner.SAMPLES_PER_FRAME
+                val to = min(samples.size, ch.endFrame * SpeechAligner.SAMPLES_PER_FRAME)
+                if (to - from < 16000 / 4) return@forEachIndexed   // under 0.25 s: nothing to read
+                val slice = samples.copyOfRange(from, to)
+                val r = WhisperLib.transcribe(c, slice, threads, LANGUAGE, ProgressListener { p ->
+                    onProgress(((i * 100 + p.coerceIn(0, 100)) / chunks.size).coerceIn(1, 99))
+                })
+                if (r == -2) throw InterruptedException()
+                if (r != 0) throw IOException("Speech recognition failed (code $r).")
+                val offsetMs = from * 1000L / 16000L
+                val pieceMs = slice.size * 1000L / 16000L
+                for (w in cleanUp(collectWords(c), pieceMs)) {
+                    w.startMs += offsetMs
+                    w.endMs += offsetMs
+                    words.add(w)
+                }
+                onProgress(((i + 1) * 100 / chunks.size).coerceIn(1, 100))
+            }
+            for (k in 1 until words.size) {
+                if (words[k].startMs < words[k - 1].endMs) words[k - 1].endMs = max(words[k - 1].startMs + 60, words[k].startMs)
+            }
+            // Show each word a moment before its sound (measured best: 60 ms).
+            val shift = audioStartMs.coerceIn(0L, 2000L) - LEAD_MS
+            for (w in words) {
+                w.startMs = (w.startMs + shift).coerceAtLeast(0L)
+                w.endMs = (w.endMs + shift).coerceAtLeast(w.startMs + 120)
+            }
+            Log.i(TAG, "CAPTION_WORDS pieces=${chunks.size} " + words.joinToString(" | ") { "${it.startMs}-${it.endMs}" })
             return words
         }
     }
 
+    private const val LEAD_MS = 60L
     private const val TAG = "DhivehiSubs"
 
     private class Builder(val startCs: Long) {
