@@ -1,0 +1,2 @@
+ls: /sdcard/Movies/Dhivehi: No such file or directory
+ls: Subtitles/: No such file or directory
