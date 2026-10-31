@@ -2,7 +2,7 @@ package mv.dhivehi.subtitles.captions
 
 /**
  * Dhivehi fonts bundled with the app. All are under the SIL Open Font License 1.1
- * (Thaana Type / Thaana Type Foundry, and Google's Noto Sans Thaana); see assets/fonts/*-OFL.txt.
+ * (Thaana Type / Thaana Type Foundry, and Google's Noto Sans Thaana); licence texts are in assets/fonts.
  *
  * [scale] makes every font appear about the same height on screen (measured on Thaana letters).
  */
