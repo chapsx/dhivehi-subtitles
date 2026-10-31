@@ -154,8 +154,8 @@ class SpeechAligner(samples: FloatArray) {
 
     companion object {
         const val SAMPLES_PER_FRAME = 160
-        private const val CHUNK_MAX_FRAMES = 800    // pieces up to 8 s
-        private const val CHUNK_SPLIT_PAUSE = 70    // always cut at pauses of 0.7 s or more
+        private const val CHUNK_MAX_FRAMES = 1200   // pieces up to 12 s
+        private const val CHUNK_SPLIT_PAUSE = 25    // cut at every pause of 0.25 s or more (most accurate)
         private const val CHUNK_PAD = 15            // keep 150 ms of room around the voice
         private const val HOP = 160          // 10 ms at 16 kHz
         private const val WIN = 320          // 20 ms window
