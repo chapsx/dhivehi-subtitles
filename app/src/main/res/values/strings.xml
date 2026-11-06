@@ -14,6 +14,15 @@
 
     <string name="edit_subtitles">Edit subtitles</string>
     <string name="redo">Redo</string>
+    <string name="script">Script</string>
+    <string name="script_title">Paste the exact text</string>
+    <string name="script_hint">Paste or type exactly what is said in the video. The words will appear exactly as you wrote them, with every fili correct, and the app times each word to the voice.</string>
+    <string name="script_placeholder">ދިވެހި ލިޔުން މިތާ ޕޭސްޓް ކުރައްވާ</string>
+    <string name="script_apply">Use this text</string>
+    <string name="script_empty">Paste some Dhivehi text first.</string>
+    <string name="script_done">Subtitles now use your text (%1$d words).</string>
+    <string name="script_wait">Wait until the app has finished listening, then add your text.</string>
+    <string name="preset_reader">Reader</string>
     <string name="sync">Sync</string>
     <string name="style">Style</string>
     <string name="export">Export for TikTok</string>

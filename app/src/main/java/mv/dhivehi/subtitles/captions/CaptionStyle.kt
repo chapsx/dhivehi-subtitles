@@ -31,6 +31,7 @@ data class CaptionStyle(
             Preset.POP -> {
                 textColor = Color.WHITE; highlightColor = 0xFFFFD60A.toInt(); strokeColor = Color.BLACK
                 strokeFraction = 0.13f; shadow = true; boxed = false; highlightWords = true; popAnimation = true
+                boxColor = 0xD9000000.toInt()
             }
             Preset.CLEAN -> {
                 textColor = Color.WHITE; highlightColor = Color.WHITE; strokeColor = 0xCC000000.toInt()
@@ -38,16 +39,25 @@ data class CaptionStyle(
             }
             Preset.BOX -> {
                 textColor = Color.WHITE; highlightColor = 0xFF3EE6A8.toInt(); strokeColor = Color.TRANSPARENT
-                strokeFraction = 0f; shadow = false; boxed = true; highlightWords = true; popAnimation = true
+                strokeFraction = 0f; shadow = false; boxed = true; boxColor = 0xD9000000.toInt()
+                highlightWords = true; popAnimation = true
             }
             Preset.NEON -> {
                 textColor = 0xFFFFFFFF.toInt(); highlightColor = 0xFFFF3B8D.toInt(); strokeColor = 0xFF1B0A3A.toInt()
                 strokeFraction = 0.15f; shadow = true; boxed = false; highlightWords = true; popAnimation = true
             }
+            Preset.READER -> {
+                // Calm, book-like: dark text on a warm paper box, like a Dhivehi story reader.
+                // An imported font (e.g. Faruma) still takes priority; otherwise use the text face Hawwa.
+                fontId = "hawwa"
+                textColor = 0xFF1C1A17.toInt(); highlightColor = 0xFFB4690E.toInt(); strokeColor = Color.TRANSPARENT
+                strokeFraction = 0f; shadow = false; boxed = true; boxColor = 0xF2FBF6EC.toInt()
+                highlightWords = true; popAnimation = false
+            }
         }
     }
 
-    enum class Preset { POP, CLEAN, BOX, NEON }
+    enum class Preset { POP, CLEAN, BOX, NEON, READER }
 
     fun save(context: Context) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().apply {

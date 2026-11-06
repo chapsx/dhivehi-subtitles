@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -13,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
@@ -47,6 +49,7 @@ import mv.dhivehi.subtitles.captions.CaptionBuilder
 import mv.dhivehi.subtitles.captions.CaptionRenderer
 import mv.dhivehi.subtitles.captions.CaptionStyle
 import mv.dhivehi.subtitles.captions.CaptionTimeline
+import mv.dhivehi.subtitles.captions.ScriptAligner
 import mv.dhivehi.subtitles.captions.Word
 import mv.dhivehi.subtitles.export.MediaSaver
 import mv.dhivehi.subtitles.export.VideoExporter
@@ -137,6 +140,7 @@ class EditorActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.backButton).setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         findViewById<View>(R.id.redoButton).setOnClickListener { confirmRedo() }
+        findViewById<View>(R.id.scriptButton).setOnClickListener { showScriptDialog() }
         playButton.setOnClickListener { togglePlay() }
         findViewById<View>(R.id.previewFrame).setOnClickListener { togglePlay() }
         findViewById<View>(R.id.syncButton).setOnClickListener { showSyncSheet() }
@@ -342,6 +346,51 @@ class EditorActivity : AppCompatActivity() {
                 startTranscription()
             }
             .show()
+    }
+
+    // ---------------------------------------------------------------- paste script
+
+    /**
+     * The person pastes the exact words. The speech model's words are only used for timing,
+     * so the subtitles show the script's spelling, fili and punctuation exactly.
+     */
+    private fun showScriptDialog() {
+        if (busyPanel.visibility == View.VISIBLE || project.captions.isEmpty()) {
+            Toast.makeText(this, R.string.script_wait, Toast.LENGTH_LONG).show()
+            return
+        }
+        val view = layoutInflater.inflate(R.layout.dialog_script, null)
+        val input = view.findViewById<EditText>(R.id.scriptInput)
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.script_title)
+            .setView(view)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.script_apply, null)
+            .create()
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val text = input.text?.toString().orEmpty()
+                if (ScriptAligner.tokenize(text).isEmpty()) {
+                    Toast.makeText(this, R.string.script_empty, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                dialog.dismiss()
+                applyScript(text)
+            }
+        }
+        dialog.show()
+    }
+
+    private fun applyScript(text: String) {
+        player?.pause()
+        val heard = project.captions.flatMap { c -> c.words.map { it.copyWord() } }
+        lifecycleScope.launch {
+            val words = withContext(Dispatchers.Default) { ScriptAligner.align(text, heard, durationMs) }
+            if (words.isEmpty()) return@launch
+            project.captions = CaptionBuilder.build(words, style.wordsPerCaption)
+            captionsChanged(0)
+            Toast.makeText(this@EditorActivity, getString(R.string.script_done, words.size), Toast.LENGTH_LONG).show()
+        }
     }
 
     // ---------------------------------------------------------------- editing
@@ -565,6 +614,7 @@ class EditorActivity : AppCompatActivity() {
                 R.id.presetClean -> CaptionStyle.Preset.CLEAN
                 R.id.presetBox -> CaptionStyle.Preset.BOX
                 R.id.presetNeon -> CaptionStyle.Preset.NEON
+                R.id.presetReader -> CaptionStyle.Preset.READER
                 else -> null
             } ?: return@setOnCheckedStateChangeListener
             style.applyPreset(p)
